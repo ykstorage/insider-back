@@ -1,0 +1,52 @@
+{
+  "name": "conduit-node",
+  "version": "1.0.0",
+  "description": "conduit on node",
+  "main": "app.js",
+  "scripts": {
+    "mongo:start": "docker run --name realworld-mongo -p 27017:27017 mongo & sleep 5",
+    "start": "node ./app.js",
+    "dev": "nodemon ./app.js",
+    "test": "newman run ./tests/api-tests.postman.json -e ./tests/env-api-tests.postman.json",
+    "stop": "lsof -ti :3000 | xargs kill",
+    "mongo:stop": "docker stop realworld-mongo && docker rm realworld-mongo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gothinkster/productionready-node-api.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "1.18.3",
+    "cors": "2.8.5",
+    "ejs": "2.6.1",
+    "errorhandler": "1.5.0",
+    "express": "4.16.4",
+    "express-jwt": "5.3.1",
+    "express-session": "1.15.6",
+    "jsonwebtoken": "8.4.0",
+    "method-override": "3.0.0",
+    "methods": "1.1.2",
+    "mongoose": "^5.4.11",
+    "mongoose-unique-validator": "2.0.2",
+    "morgan": "1.9.1",
+    "passport": "0.4.0",
+    "passport-local": "1.0.0",
+    "request": "2.88.0",
+    "slug": "0.9.3",
+    "socket.io": "^2.2.0",
+    "underscore": "1.9.1"
+  },
+  "devDependencies": {
+    "newman": "^4.3.1",
+    "nodemon": "^1.11.0"
+  },
+  "bugs": {
+    "url": "https://github.com/gothinkster/productionready-node-api/issues"
+  },
+  "homepage": "https://github.com/gothinkster/productionready-node-api#readme",
+  "directories": {
+    "test": "tests"
+  },
+  "author": ""
+}
