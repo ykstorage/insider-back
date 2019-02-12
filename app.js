@@ -47,6 +47,7 @@ if (isProduction) {
 require("./models/User");
 require("./models/Article");
 require("./models/Comment");
+require("./models/Chatting");
 require("./config/passport");
 
 app.use(require("./routes"));
@@ -94,15 +95,37 @@ var server = app.listen(process.env.PORT || 3000, function() {
     console.log("Listening on port " + server.address().port);
 });
 
+var Chatting = mongoose.model("Chatting");
+
 //socket.io
 const io = require("socket.io")(server);
 io.on("connection", function(socket) {
     console.log('=========> Socket ID : ' + socket.id);
     
+    //DB에서 데이터 불러와야함
+    //불러오려면 구분자 있어야할듯 room?
+    Chatting.find(function (err, result) {
+        for(let i = 0 ; i < result.length ; i++) {
+            let dbData = {author : result[i].author, type : result[i].type, data: result[i].data };
+            io.sockets.sockets[socket.id].emit('preload', dbData);
+        }
+    });
+
     //연결되어 있는 클라이언트 소켓으로부터 들어오는 "SEND_MESSAGE" 이름의 이벤트에 대해 이벤트 처리를 한다.
     socket.on("SEND_MESSAGE", function(data) {
         console.log(data);
-        //io.emit("MESSAGE", data);
+        
+        let chat = new Chatting({ author: data.author, type: data.type, data: data.data });
+        chat.save(function (err, data) {
+            if (err) {// TODO handle the error
+                console.log("error");
+                console.log(err);
+            }else{
+                //console.log('insert success!!');
+            }
+        });
+        
+        //나를 제외한 모두에게 메세지 전송
         socket.broadcast.emit("MESSAGE", data);
     });
 });
